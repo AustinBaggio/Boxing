@@ -1,0 +1,9 @@
+I think we need this:
+
+A custom view that is just a blank canvas
+The screen layout as:
+
+Linear layout (vertical) OF
+BlankCanvas - My implemented class
+GridLayout - This one needs to be organized such that the buttons have the right sizes, and gravity bound DOWN.  I think by doing that, the previous blank canvas will take up the whole remaining space.
+
