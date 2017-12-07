@@ -18,7 +18,7 @@ int main(void)
     string userInput;
 	ByteArray msgReceived;
 
-	std::cout << "I am a client" << std::endl;
+	std::cout << "I am a player" << std::endl;
 
 	//construct a socket
 	Socket s ("127.0.0.1", 2000);
@@ -28,7 +28,7 @@ int main(void)
 
 	while (true){
 
-        mutex->Wait();
+        //mutex->Wait();
 
         if (userInput == "done") {
             cout << "terminating...." << endl;
@@ -49,8 +49,8 @@ int main(void)
             continue;
         }
 
-		alert->Signal();
-        mutex->Signal();
+		//alert->Signal();
+        //mutex->Signal();
         //record data being received to the bytearray object
 		s.Read(msgReceived);
 
