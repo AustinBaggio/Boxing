@@ -22,7 +22,7 @@ int main(void)
 	std::cout << "I am a player" << std::endl;
 
 	//construct a socket
-	Socket s ("127.0.0.1", 2000);
+	Socket s ("127.0.0.1", 2002);
 
 	//connect to IP address and port specified
     s.Open();
@@ -30,16 +30,16 @@ int main(void)
 
 	while (playGame){
 
+        FlexWait waiter(2,&s,&cinWatcher);
+        Blockable* result = waiter.Wait();
         //mutex->Wait();
 
-        if (userInput == "done") {
-            cout << "terminating...." << endl;
-            break;
-        }
+        
 
-		cout <<"type: punch"<<endl;
+		//cout <<"type: punch"<<endl;
+        if(result == &cinWatcher){
 		getline(cin, userInput);
-
+        
         //transforms string into raw data
         ByteArray rawUserInput = (userInput);
 
@@ -50,24 +50,33 @@ int main(void)
             cout <<"data failed to send"<<endl;
             continue;
         }
-
+        if (userInput == "done") {
+            cout << "terminating...." << endl;
+            playGame=false;
+            break;
+        }
+        }
 		//alert->Signal();
         //mutex->Signal();
         //record data being received to the bytearray object
+    
+        if(result==&s){
+
+
 		s.Read(msgReceived);
         string temp = msgReceived.ToString();
         std::cout <<temp<<endl;
 
 
-        health-=1;
+       // health-=1;
 		//display the received message in string format
-		cout <<"Got punched! Health is now: "<<health<<endl;
+		//cout <<"Got punched! Health is now: "<<health<<endl;
 
         if (health == 0) {
-            cout <<"I'm dead, game over"<<endl;
+            
             playGame=false;
         }
-
+        }
 	}
 	s.Close();//close the socket when loop breaks
 }

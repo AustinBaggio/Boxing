@@ -42,27 +42,25 @@ void modifyString(int counter) {
                 int tempInt = myClient.Read(fromClient);//read the bytearray data sent from client
                 //convert and store as string
                 string temp = fromClient.ToString();
-                
-                string num = std::to_string(counter);
-                
-                temp = num + ": " + temp + "\n";
-                std::cout <<temp;
-                //std::cout << counter<< ": " << temp << "\n" << std::endl;
-
-
-                if(counter ==1){
-                    //otherPlayerSocket = clientSockets[0];
-                }
                 if (temp == "done") {
                     myClient.Close();
-                    running == false;
-                    return;//get out of loop
-                } else {
-                    for(int i=0; i< clientSockets.size();i++){
-                        clientSockets[i].Write(ByteArray(temp)); //send back the converted string to client as a ByteArray
+                    //break;//get out of loop
+                }
+
+                string num = std::to_string(counter);
+                
+                string output = "\t" + num + ": " + temp;
+                //std::cout << output;
+                std::cout << counter<< ": " << temp << "\n" << std::endl;
+
+                for(int i=0; i< clientSockets.size();i++){
+                    if(counter==i){
+                        continue;
+                        }
+                        clientSockets[i].Write(ByteArray(output)); //send back the converted string to client as a ByteArray
                     }
                     
-                }
+                
                 //mutex->Signal();
         }
 }
@@ -71,7 +69,7 @@ int main(void)
 {
 
     int playerCounter = 0;
-    SocketServer myServer = SocketServer(2000);
+    SocketServer myServer = SocketServer(2002);
 
     cout << "I am a server."<<endl;
 
@@ -87,10 +85,10 @@ int main(void)
         playerCounter++;//increment player counter
     }
 
-    for (int i = 0; i <threads.size(); i++){
-        cout<<"Releasing Threads...."<<i<<endl;
-        threads[i].join();
-    }
+    // for (int i = 0; i <threads.size(); i++){
+    //     cout<<"Releasing Threads...."<<i<<endl;
+    //     threads[i].join();
+    // }
     myServer.Shutdown();
 
 
