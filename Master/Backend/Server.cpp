@@ -32,7 +32,9 @@ void modifyString(int counter) {
 
                 //alert->Wait();
                 //mutex->Wait();
+                //Creating the Host on the current count
                 Socket& myClient = clientSockets[counter];
+                //Getting
                 Socket otherPlayerSocket = clientSockets[1];
 
                 int tempInt = myClient.Read(fromClient);//read the bytearray data sent from client
@@ -61,7 +63,7 @@ int main(void)
 {
 
     int playerCounter = 0;
-    SocketServer myServer = SocketServer(2000);
+    SocketServer myServer = ("127.0.0.1", 2002);
 
     cout << "I am a server."<<endl;
 

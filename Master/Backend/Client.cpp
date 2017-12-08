@@ -21,7 +21,7 @@ int main(void)
 	std::cout << "I am a player" << std::endl;
 
 	//construct a socket
-	Socket s ("127.0.0.1", 2000);
+	Socket s ("127.0.0.1", 2002);
 
 	//connect to IP address and port specified
     s.Open();
