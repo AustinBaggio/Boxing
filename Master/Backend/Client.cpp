@@ -14,54 +14,60 @@ Semaphore* alert= new Semaphore("signalThreads",0,true);
 
 int main(void)
 {
-	int health = 10;
-    string userInput;
-	ByteArray msgReceived;
+    int health = 10;
+    ByteArray msgReceived;
+    bool ready = false;
+    bool quit=false;
 
-	std::cout << "I am a player" << std::endl;
+    std::cout << "I am a player" << std::endl;
 
-	//construct a socket
-	Socket s ("127.0.0.1", 2002);
+    //construct a socket
+    Socket s ("54.167.215.132", 2013);
 
-	//connect to IP address and port specified
+    //connect to IP address and port specified
     s.Open();
 
-	while (true){
+    /*
+    while (!ready){
 
-        //mutex->Wait();
+        s.Read(msgReceived);
 
-        if (userInput == "done") {
-            cout << "terminating...." << endl;
-            break;
+        if(msgReceived.ToString() == "Waiting for opponent..."){
+            cout<<msgReceived.ToString();
+            continue; //continue to loop until message is not "waiting for opponent"
+        } else {
+            cout<<msgReceived.ToString(); //this message should be "Ready"
+            ready = true;
         }
+    }*/
 
-		cout <<"type: punch"<<endl;
-		getline(cin, userInput);
+    while (!quit){
 
-        //transforms string into raw data
-        ByteArray rawUserInput = (userInput);
+        FlexWait waiter(2, cinWatcher, &s);
+        Blockable * result = waiter.Wait(); //flex wait starts
 
-        //sends the raw data
-        try {
-            s.Write(rawUserInput);
-        } catch (int e) {
-            cout <<"data failed to send"<<endl;
-            continue;
+        if (result == &s){
+
+            s.Read(msgReceived);
+            cout<<msgReceived.ToString()<<endl;
+            if (msgReceived.ToString() =="quit"){
+                quit = true;
+                break;
+            }
+
+        } else if (result == &cinWatcher) {
+            string input;
+            getline(cin, input);//get input from user
+
+            if (input =="quit"){
+                s.Write(ByteArray(input)); //tells server that user has quit
+                quit = true;
+                break; //end the client
+            }
+
+            s.Write(ByteArray(input)); //if it didn't end, write it to the socket
         }
-
-		//alert->Signal();
-        //mutex->Signal();
-        //record data being received to the bytearray object
-		s.Read(msgReceived);
-
-        health-=1;
-		//display the received message in string format
-		cout <<"Got punched! Health is now: "<<health<<endl;
-
-        if (health == 0) {
-            cout <<"I'm dead, game over"<<endl;
-        }
-
-	}
-	s.Close();//close the socket when loop breaks
+    }
+    cout<<"Quiting..."<<endl;
+    s.Close();//close the socket when loop breaks
 }
