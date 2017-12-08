@@ -19,29 +19,32 @@ Semaphore* mutex = new Semaphore("accessToSharedObject",1);
 Semaphore* alert= new Semaphore("signalThreads",0);
 
 
-vector<thread> threads;
-vector<Socket> clientSockets;
+vector<thread> threads;//vector of threads
+vector<Socket> clientSockets;//vector of clientSockets
 bool running = true; //to determine if server is running
 
 
 void modifyString(int counter) {
 
-        ByteArray fromClient;
+        ByteArray fromClient;//byteArray
         //Socket &mySocket = sockets[count];//make a temp socket address and reference it to the socket made earlier
 
-        while (running) {
+        while (1) {
 
                 //alert->Wait();
                 //mutex->Wait();
-
+                //create a new socket in the socket vector
                 Socket myClient = clientSockets[counter];
                 //Socket& otherPlayerSocket = clientSockets[1];
 
                 //FlexWait fw(2, myClient, otherPlayerSocket);
 
                 int tempInt = myClient.Read(fromClient);//read the bytearray data sent from client
+                
                 //convert and store as string
                 string temp = fromClient.ToString();
+
+                //if client sent done, close socket and break from loop
                 if (temp == "done") {
                     myClient.Close();
                     //break;//get out of loop
@@ -51,7 +54,7 @@ void modifyString(int counter) {
                 
                 string output = "\t" + num + ": " + temp;
                 //std::cout << output;
-                std::cout << counter<< ": " << temp << "\n" << std::endl;
+                std::cout << counter<<": " << temp << "\n" << std::endl;
 
                 for(int i=0; i< clientSockets.size();i++){
                     if(counter==i){
@@ -85,10 +88,10 @@ int main(void)
         playerCounter++;//increment player counter
     }
 
-    // for (int i = 0; i <threads.size(); i++){
-    //     cout<<"Releasing Threads...."<<i<<endl;
-    //     threads[i].join();
-    // }
+    for (int i = 0; i <threads.size(); i++){
+        cout<<"Releasing Threads...."<<i<<endl;
+        threads[i].join();
+    }
     myServer.Shutdown();
 
 

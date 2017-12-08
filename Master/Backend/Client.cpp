@@ -52,7 +52,7 @@ int main(void)
         }
         if (userInput == "done") {
             cout << "terminating...." << endl;
-            playGame=false;
+            //playGame=false;
             break;
         }
         }
