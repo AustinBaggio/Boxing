@@ -5,6 +5,7 @@
 #include <string>
 #include "Semaphore.h"
 #include "SharedObject.h"
+#include "Blockable.h"
 
 using namespace Sync;
 using namespace std;
@@ -25,8 +26,9 @@ int main(void)
 
 	//connect to IP address and port specified
     s.Open();
+    bool playGame = true;
 
-	while (true){
+	while (playGame){
 
         //mutex->Wait();
 
@@ -44,7 +46,7 @@ int main(void)
         //sends the raw data
         try {
             s.Write(rawUserInput);
-        } catch (int e) {
+        } catch (...) {
             cout <<"data failed to send"<<endl;
             continue;
         }
@@ -53,6 +55,9 @@ int main(void)
         //mutex->Signal();
         //record data being received to the bytearray object
 		s.Read(msgReceived);
+        string temp = msgReceived.ToString();
+        std::cout <<temp<<endl;
+
 
         health-=1;
 		//display the received message in string format
@@ -60,6 +65,7 @@ int main(void)
 
         if (health == 0) {
             cout <<"I'm dead, game over"<<endl;
+            playGame=false;
         }
 
 	}
