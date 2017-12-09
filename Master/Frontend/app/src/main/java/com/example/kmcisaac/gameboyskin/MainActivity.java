@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //create the main layout
         setContentView(R.layout.activity_main);
         theSocket = null;
 
@@ -48,12 +49,18 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    //Declare sockets, handlers and UI Elements
     private Socket theSocket;
     private OutputStream outStream;
     private InputStream inStream;
     private Handler uiThread;
     private String rxText;
     private ConnectionThread theConnection;
+    private EditText userIn;
+
+
+    //Gettinga connection using mutiple threads
     public class ConnectionThread extends Thread
     {
         public ConnectionThread()
@@ -64,10 +71,14 @@ public class MainActivity extends AppCompatActivity {
         {
             try
             {
-                //CHANGE TO AWS SERVER
-                theSocket = new Socket(InetAddress.getByName("54.167.215.132"), 2010);
+                //Connect the socket to the AWS server
+                theSocket = new Socket(InetAddress.getByName("54.167.215.132"), 2013);
+
+                //Get the input and output streams
                 outStream = theSocket.getOutputStream();
                 inStream = theSocket.getInputStream();
+
+                //Update the UI
                 uiThread.post(new Runnable(){
                     public void run()
                     {
@@ -75,14 +86,19 @@ public class MainActivity extends AppCompatActivity {
                         bc.setText("Connected");
                     }
                 });
+
+                //Ready string in a byte ibject
                 byte[] readBuffer = new byte[256];
                 while(true)
                 {
+
+                    //send to Socket
                     for (int i=0;i<256;i++)
                         readBuffer[i]=0;
                     inStream.read(readBuffer);
                     rxText = new String(readBuffer, "UTF-8");
 
+                    //update the response onto the UI
                     uiThread.post(new Runnable(){
                         public void run()
                         {
@@ -99,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Connect to a new game
     public void onConnectButton(View v)
     {
         try {
@@ -111,20 +128,8 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Error",e.toString());
         }
     }
-    public void onDisconnectButton(View v)
-    {
-        try {
-            if (theSocket != null)
-                theSocket.close();
-            theSocket = null;
-            BlankCanvas bc = findViewById(R.id.canvas1);
-            bc.setText("Disconnected");
-        }
-        catch(Exception e)
-        {
-            Log.d("Error",e.toString());
-        }
-    }
+
+    //Send helper function
     private class Sender extends Thread {
         String toSend;
         Sender (String s)
@@ -138,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
+            //If success
             try {
                 Log.d("sent Success: ", toSend);
 
@@ -150,11 +156,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public EditText userIn;
+    //User Input functions
 
     public void onPunchButton(View v)
     {
         userIn = (EditText) findViewById(R.id.userIn);
+
+        //Old Send
+        //new Sender("Punch").start();
 
         new Sender(userIn.getText().toString()).start();
     }
@@ -162,5 +171,10 @@ public class MainActivity extends AppCompatActivity {
     public void OnBlockButton(View v)
     {
         new Sender("Block").start();
+    }
+    public void onDisconnectButton(View v)
+    {
+        new Sender("quit").start();
+
     }
 }
