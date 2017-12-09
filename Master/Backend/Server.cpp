@@ -25,44 +25,50 @@ vector <thread> playerThreadList;
 
 bool quit = false;
 
-void playerThreadActivity( Socket otherPlayer, Socket me) {
+int playerThreadActivity( Socket otherPlayer, Socket me) {
     ByteArray data;
     //bool running = true;
 
-    while (1) {
+    while (!quit) {
+        try {
+            FlexWait messageWaiter(2, &otherPlayer, &me);
+            Blockable *result = messageWaiter.Wait(); //flex wait starts
 
-        FlexWait messageWaiter(2, &otherPlayer, &me);
-        Blockable *result = messageWaiter.Wait(); //flex wait starts
+            if (result == &otherPlayer) {
+                otherPlayer.Read(data);
 
-        if (result == &otherPlayer) {
-            otherPlayer.Read(data);
+                //if player sends quit
+                if (data.ToString() == "quit") {
+                    cout << "one player has quit, chatroom shutting down" << endl;
+                    me.Write(data); //tells the other player to quit
 
-            //if player sends quit
-            if (data.ToString() == "quit") {
-                cout << "one player has quit, chatroom shutting down" << endl;
-                me.Write(data); //tells the other player to quit
+                    //player thread terminates
+                    break;
+                }
 
-                //player thread terminates
-                break;
+                me.Write(data);//send message to other player
+
+            } else if (result == &me) {
+                me.Read(data);
+
+                if (data.ToString() == "quit") {
+                    cout << "one player has quit, chatroom shutting down" << endl;
+                    otherPlayer.Write(data); //tells the other player to quit
+                    break;
+                }
+
+                otherPlayer.Write(data);// send message to other player
             }
-
-            me.Write(data);//send message to other player
-
-        } else if (result == &me) {
-            me.Read(data);
-
-            if (data.ToString() == "quit") {
-                cout << "one player has quit, chatroom shutting down" << endl;
-                otherPlayer.Write(data); //tells the other player to quit
-                break;
-            }
-
-            otherPlayer.Write(data);// send message to other player
+        } catch (...){
+            break;
         }
     }
+
     cout << "closing sockets..." << endl;
+
     otherPlayer.Close();
     me.Close();
+    return 0;
 
 }
 
@@ -132,18 +138,29 @@ int main(void)
             string s;
             getline(cin, s); //get the user input if they wanna quit
             if (s == "quit"){
-                quit = true; //end the loop
+                quit = true;
                 break;
-            } else
-            {
-                continue; //loop again
             }
-
         }
 
     }
+    cout<<"Server quitting!..."<<endl;
 
-    myServer.Shutdown();
+    for (int i = 0; i <socketList.size(); i++){
+        socketList[i].Close();
+    }
+    cout<<"sockets closed"<<endl;
 
+    for (int i =0; i<playerThreadList.size(); i++){
+        playerThreadList[i].join();
+    }
+    cout<<"playerthreads closed"<<endl;
+    for (int i =0; i<gameControllerList.size(); i++){
+        gameControllerList[i].join();
+    }
+    cout<<"game controllers closed"<<endl;
+
+    myServer.Shutdown();//end the loop
+    return 0;
 
 }
