@@ -62,9 +62,26 @@
     </GridLayout>
 
     <com.example.kmcisaac.gameboyskin.BlankCanvas
-        android:layout_height="wrap_content"
+        android:id="@+id/canvas1"
         android:layout_width="wrap_content"
-        android:layout_above="@id/controlGrid"
-        app:label="Disconnected"
-        android:id="@+id/canvas1"/>
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/controlGrid"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="219dp"
+        app:label="Disconnected" />
+
+    <EditText
+        android:id="@+id/userIn"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name" />
 </RelativeLayout>

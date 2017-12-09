@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -149,9 +150,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public EditText userIn;
+
     public void onPunchButton(View v)
     {
-        new Sender("Punch").start();
+        userIn = (EditText) findViewById(R.id.userIn);
+
+        new Sender(userIn.getText().toString()).start();
     }
 
     public void OnBlockButton(View v)
