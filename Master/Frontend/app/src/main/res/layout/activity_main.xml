@@ -42,10 +42,12 @@
 
         <Button
             android:id="@+id/punchButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="5"
             android:layout_row="1"
+            android:background="@mipmap/fist"
             android:onClick="onPunchButton"
             android:text="Punch/Send" />
 
@@ -59,6 +61,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="219dp"
+        android:background="@mipmap/ic_launcher_foreground"
         app:label="Disconnected" />
 
     <EditText

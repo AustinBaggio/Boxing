@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                         public void run()
                         {
                             BlankCanvas bc = findViewById(R.id.canvas1);
-                            bc.setText("Got:" + rxText);
+                            bc.setText(rxText);
                         }
                     });
                 }
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //User Input functions
+    //User Input
 
     public void onPunchButton(View v)
     {
@@ -174,7 +174,16 @@ public class MainActivity extends AppCompatActivity {
     }
     public void onDisconnectButton(View v)
     {
-        new Sender("quit").start();
-
+        try {
+            if (theSocket != null)
+                theSocket.close();
+            theSocket = null;
+            BlankCanvas bc = findViewById(R.id.canvas1);
+            bc.setText("Disconnected");
+        }
+        catch(Exception e)
+        {
+            Log.d("Error",e.toString());
+        }
     }
 }
