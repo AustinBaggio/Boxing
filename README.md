@@ -43,5 +43,5 @@ Play on Unix:
 
 Play on device:
 * Connect Button, connects to a new game
-* Quit Button, quitc current game
-* Punch Button throws a punch
+* Quit Button, quits current game
+* Punch Button throws a "punch"
