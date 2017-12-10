@@ -6,37 +6,33 @@ Boxing Game using threads and server client architecture
 Locate KeyPairs folder (Boxing/Master/Keypairs) and save to C:/ 
 
 open cmd and run:
+```
 bvssh -keypairFile=c:\KeyPairs\abaggio2013.pem -user=abaggio -host=ec2-54-167-215-132.compute-1.amazonaws.com
 press login on Bitvise SSH Client
+```
 
 In Unix terminal
-
+```
 cd Master/Backend
-
 make
-
 ./Server
-
+```
 
 Open two of the following to play:
 
 
   Open another Unix terminal, 
-  
+  ```
   cd Master/Backend
-  
   ./Client
-
+```
 
 
   OR
 
 
   Open Boxing/Frontend in Android Studio, 
-  
-  Build the main activity to your device or emulator 
-  
-  Run
+  Build the main activity to your device or emulator and Run
   
 
 Play on Unix:
