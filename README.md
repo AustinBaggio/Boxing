@@ -37,15 +37,11 @@ Open two of the following to play:
 
 Play on Unix:
 
-type anything to "punch"
-
-type quit to exit
+*type anything to "punch"
+*type quit to exit
 
 
 Play on device:
-
-Connect Button, connects to a new game
-
-Quit Button, quitc current game
-
-Punch Button throws a punch
+*Connect Button, connects to a new game
+*Quit Button, quitc current game
+*Punch Button throws a punch
