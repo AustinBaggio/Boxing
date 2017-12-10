@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText userIn;
 
 
-    //Gettinga connection using mutiple threads
+    //Getting a connection using multiple threads
     public class ConnectionThread extends Thread
     {
         public ConnectionThread()
@@ -71,14 +71,9 @@ public class MainActivity extends AppCompatActivity {
         {
             try
             {
-                //Connect the socket to the AWS server
                 theSocket = new Socket(InetAddress.getByName("54.167.215.132"), 2013);
-
-                //Get the input and output streams
                 outStream = theSocket.getOutputStream();
                 inStream = theSocket.getInputStream();
-
-                //Update the UI
                 uiThread.post(new Runnable(){
                     public void run()
                     {
@@ -86,24 +81,28 @@ public class MainActivity extends AppCompatActivity {
                         bc.setText("Connected");
                     }
                 });
-
-                //Ready string in a byte ibject
                 byte[] readBuffer = new byte[256];
                 while(true)
                 {
-
-                    //send to Socket
                     for (int i=0;i<256;i++)
                         readBuffer[i]=0;
                     inStream.read(readBuffer);
                     rxText = new String(readBuffer, "UTF-8");
+                    Log.d("Pre", rxText);
+                    char test = 'q';
+                    if(test == rxText.charAt(0)){
+                        Log.d("InQ  ","Should Break");
+                        disconnect();
+                        break;
+                    }
 
-                    //update the response onto the UI
+
                     uiThread.post(new Runnable(){
                         public void run()
                         {
+                            Log.d("Read", rxText);
                             BlankCanvas bc = findViewById(R.id.canvas1);
-                            bc.setText(rxText);
+                            bc.setText("Got:" + rxText);
                         }
                     });
                 }
@@ -161,20 +160,17 @@ public class MainActivity extends AppCompatActivity {
     public void onPunchButton(View v)
     {
         userIn = (EditText) findViewById(R.id.userIn);
-
-        //Old Send
-        //new Sender("Punch").start();
-
         new Sender(userIn.getText().toString()).start();
     }
 
-    public void OnBlockButton(View v)
-    {
-        new Sender("Block").start();
-    }
     public void onDisconnectButton(View v)
     {
+       disconnect();
+    }
+    public void disconnect(){
         try {
+            new Sender("quit").start();
+
             if (theSocket != null)
                 theSocket.close();
             theSocket = null;
