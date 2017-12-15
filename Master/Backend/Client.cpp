@@ -9,14 +9,10 @@
 using namespace Sync;
 using namespace std;
 
-Semaphore* mutex = new Semaphore("accessToSharedObject",1,true);
-Semaphore* alert= new Semaphore("signalThreads",0,true);
 
 int main(void)
 {
-    int health = 10;
     ByteArray msgReceived;
-    bool ready = false;
     bool quit=false;
 
     std::cout << "I am a player" << std::endl;
@@ -26,20 +22,6 @@ int main(void)
 
     //connect to IP address and port specified
     s.Open();
-
-    /*
-    while (!ready){
-
-        s.Read(msgReceived);
-
-        if(msgReceived.ToString() == "Waiting for opponent..."){
-            cout<<msgReceived.ToString();
-            continue; //continue to loop until message is not "waiting for opponent"
-        } else {
-            cout<<msgReceived.ToString(); //this message should be "Ready"
-            ready = true;
-        }
-    }*/
 
     while (!quit){
 
@@ -69,5 +51,6 @@ int main(void)
         }
     }
     cout<<"Quiting..."<<endl;
+
     s.Close();//close the socket when loop breaks
 }
