@@ -31,7 +31,7 @@ int playerThreadActivity(Socket otherPlayer, Socket me, int gameCount) {
 	//bool running = true;
 	string state;
 	//cout<<"hello"<<endl;
-	while (1) {
+	while (!quit) {
 
 		FlexWait messageWaiter(2, &otherPlayer, &me);
 		Blockable *result = messageWaiter.Wait(); //flex wait starts
@@ -41,9 +41,9 @@ int playerThreadActivity(Socket otherPlayer, Socket me, int gameCount) {
 			//if player sends quit
 			if (data.ToString() == "quit" || data.ToString() == "") {
 				cout << "one player has quit, chatroom shutting down" << endl;
-				me.Write(data); //tells the other player to quit
-
-								//player thread terminates
+				state = "quit";
+				me.Write(ByteArray(state));
+				otherPlayer.Write(ByteArray(state));
 				break;
 			}
 			rightHealth[gameCount]--;
@@ -52,9 +52,11 @@ int playerThreadActivity(Socket otherPlayer, Socket me, int gameCount) {
 		else if (result == &me) {///////////right
 			me.Read(data);
 
-			if (data.ToString() == "quit" || data.ToString() == "") {
+			if (data.ToString() == "quit"|| data.ToString() =="") {
 				cout << "one player has quit, chatroom shutting down" << endl;
-				otherPlayer.Write(data); //tells the other player to quit
+				state = "quit";
+				me.Write(ByteArray(state));
+				otherPlayer.Write(ByteArray(state));
 				break;
 			}
 			leftHealth[gameCount]--;
